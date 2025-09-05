@@ -39,7 +39,7 @@ col2.metric(
 col3.metric(
     "Streamers totaux",
     len(live),
-    help=f"🟢 En ligne : {en_ligne} | 🔴 Hors ligne : {hors_ligne}",
+    help=f"🟢 En ligne : {en_ligne}\n🔴 Hors ligne : {hors_ligne}",
     border=True,
 )
 
