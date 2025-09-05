@@ -24,7 +24,7 @@ st.dataframe(
         ),
         "donationAmount": st.column_config.NumberColumn(
             "Donations (€)",
-            format="euro,
+            format="euro",
         ),
     },
     use_container_width=True
