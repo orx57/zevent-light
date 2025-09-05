@@ -29,7 +29,6 @@ live = st.session_state["live"]
 col1, col2 = st.columns(2)
 col1.metric("Viewers totaux", st.session_state["viewersCount"]["formatted"], border=True)
 col2.metric("Dons totaux (€)", st.session_state["donationAmount"]["formatted"], border=True)
-st.markdown(f"[Faire un don global]({st.session_state['globalDonationUrl']})")
 
 df = pd.DataFrame(
     [
@@ -73,3 +72,5 @@ st.dataframe(
     hide_index=True,
     use_container_width=True,
 )
+
+st.markdown(f"[Faire un don global]({st.session_state['globalDonationUrl']})")
