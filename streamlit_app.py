@@ -11,6 +11,8 @@ def fetch_data():
 
 data = fetch_data() if "live" not in st.session_state else None
 
+st.title("ZEVENT 2025 light stats")
+
 if st.button("Rafraîchir les données"):
     data = fetch_data()
     st.session_state["live"] = data["live"]
@@ -28,8 +30,6 @@ live = st.session_state["live"]
 # Affichage des totaux globaux
 en_ligne = sum(item.get("online", False) for item in live)
 hors_ligne = len(live) - en_ligne
-
-st.title("ZEVENT 2025 light stats")
 
 col1, col2, col3 = st.columns(3)
 col1.metric(
