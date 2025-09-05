@@ -29,15 +29,19 @@ live = st.session_state["live"]
 en_ligne = sum(item.get("online", False) for item in live)
 hors_ligne = len(live) - en_ligne
 
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 col1.metric(
-    "Viewers totaux",
-    st.session_state["viewersCount"]["formatted"],
-    help=f"🟢 En ligne : {en_ligne} | 🔴 Hors ligne : {hors_ligne}",
-    border=True
+    "Viewers totaux", st.session_state["viewersCount"]["formatted"], border=True
 )
-col2.metric("Dons totaux (€)", st.session_state["donationAmount"]["formatted"], border=True)
-st.caption(f"🟢 Streamers en ligne : {en_ligne} | 🔴 Hors ligne : {hors_ligne}")
+col2.metric(
+    "Dons totaux (€)", st.session_state["donationAmount"]["formatted"], border=True
+)
+col3.metric(
+    "Streamers totaux",
+    len(live),
+    help=f"🟢 En ligne : {en_ligne} | 🔴 Hors ligne : {hors_ligne}",
+    border=True,
+)
 
 df = pd.DataFrame(
     [
