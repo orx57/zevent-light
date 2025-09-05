@@ -64,7 +64,6 @@ st.dataframe(
         "avatar": st.column_config.ImageColumn("Avatar"),
         "display": st.column_config.TextColumn("Streamer"),
         "online": st.column_config.TextColumn("En ligne"),
-        "game": st.column_config.TextColumn("Jeu"),
         "viewersAmount": st.column_config.NumberColumn("Viewers", format="localized"),
         "donationAmount": st.column_config.NumberColumn("Donations (€)", format="euro"),
         "twitchUrl": st.column_config.LinkColumn("Twitch", display_text="Twitch"),
