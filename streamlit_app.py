@@ -26,9 +26,18 @@ elif "live" not in st.session_state:
 live = st.session_state["live"]
 
 # Affichage des totaux globaux
+en_ligne = sum(item.get("online", False) for item in live)
+hors_ligne = len(live) - en_ligne
+
 col1, col2 = st.columns(2)
-col1.metric("Viewers totaux", st.session_state["viewersCount"]["formatted"], border=True)
+col1.metric(
+    "Viewers totaux",
+    st.session_state["viewersCount"]["formatted"],
+    help=f"🟢 En ligne : {en_ligne} | 🔴 Hors ligne : {hors_ligne}",
+    border=True
+)
 col2.metric("Dons totaux (€)", st.session_state["donationAmount"]["formatted"], border=True)
+st.caption(f"🟢 Streamers en ligne : {en_ligne} | 🔴 Hors ligne : {hors_ligne}")
 
 df = pd.DataFrame(
     [
