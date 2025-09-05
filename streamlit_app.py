@@ -15,9 +15,22 @@ df = pd.DataFrame([
     for item in live
 ])
 
+sort_by = st.selectbox(
+    "Trier par",
+    options=["viewersAmount", "donationAmount"],
+    format_func=lambda x: "Viewers" if x == "viewersAmount" else "Donations (€)"
+)
+
+df_sorted = df.sort_values(by=sort_by, ascending=False).reset_index(drop=True)
+df_sorted["position"] = df_sorted.index + 1
+
 st.dataframe(
-    df,
+    df_sorted,
     column_config={
+        "position": st.column_config.NumberColumn(
+            "Position",
+            format="d",
+        ),
         "display": st.column_config.TextColumn(
             "Streamer",
         ),
@@ -30,5 +43,6 @@ st.dataframe(
             format="euro",
         ),
     },
+    hide_index=True,
     use_container_width=True
 )
