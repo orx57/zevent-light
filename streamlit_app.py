@@ -20,7 +20,7 @@ st.dataframe(
     column_config={
         "viewersAmount": st.column_config.NumberColumn(
             "Viewers",
-            format="localized,
+            format="localized",
         ),
         "donationAmount": st.column_config.NumberColumn(
             "Donations (€)",
