@@ -27,7 +27,6 @@ elif "live" not in st.session_state:
 
 live = st.session_state["live"]
 
-# Affichage des totaux globaux
 en_ligne = sum(item.get("online", False) for item in live)
 hors_ligne = len(live) - en_ligne
 
@@ -89,3 +88,7 @@ st.dataframe(
 )
 
 st.markdown(f"[Faire un don global]({st.session_state['globalDonationUrl']})")
+
+st.markdown("---")
+st.markdown("🔗 [astucesweb.fr - ZEVENT](https://astucesweb.fr/projets/zevent/)")
+st.markdown("🔗 [zevent.gdoc.fr - Statistiques](https://zevent.gdoc.fr/statistics)")
