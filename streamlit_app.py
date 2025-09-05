@@ -29,7 +29,6 @@ st.dataframe(
     column_config={
         "position": st.column_config.NumberColumn(
             "Position",
-            format="d",
         ),
         "display": st.column_config.TextColumn(
             "Streamer",
