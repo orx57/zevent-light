@@ -18,6 +18,9 @@ df = pd.DataFrame([
 st.dataframe(
     df,
     column_config={
+        "display": st.column_config.TextColumn(
+            "Streamer",
+        )
         "viewersAmount": st.column_config.NumberColumn(
             "Viewers",
             format="localized",
