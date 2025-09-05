@@ -90,5 +90,6 @@ st.dataframe(
 st.markdown(f"[Faire un don global]({st.session_state['globalDonationUrl']})")
 
 st.markdown("---")
-st.markdown("🔗 [astucesweb.fr - ZEVENT](https://astucesweb.fr/projets/zevent/)")
-st.markdown("🔗 [zevent.gdoc.fr - Statistiques](https://zevent.gdoc.fr/statistics)")
+st.markdown("- [astucesweb.fr - ZEVENT](https://astucesweb.fr/projets/zevent/)")
+st.markdown("- [stats.zevent.fr - Statistiques](https://stats.zevent.fr/)")
+st.markdown("- [zevent.gdoc.fr - Statistiques](https://zevent.gdoc.fr/statistics)")
