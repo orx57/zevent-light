@@ -79,6 +79,10 @@ sort_by = st.selectbox(
     options=["viewersAmount", "donationAmount"],
     format_func=lambda x: "Viewers" if x == "viewersAmount" else "Donations (€)",
 )
+online_only = st.checkbox("En ligne uniquement")
+
+if online_only:
+    df = df[df["online"] == "🟢"]
 
 df_sorted = df.sort_values(by=sort_by, ascending=False).reset_index(drop=True)
 df_sorted["position"] = df_sorted.index + 1
