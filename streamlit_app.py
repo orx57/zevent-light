@@ -41,7 +41,12 @@ def fetch_data():
         st.stop()
 
 
-data = fetch_data() if "live" not in st.session_state else None
+if "live" not in st.session_state:
+    data = fetch_data()
+    st.session_state["live"] = data["live"]
+    st.session_state["globalDonationUrl"] = data["globalDonationUrl"]
+    st.session_state["donationAmount"] = data["donationAmount"]
+    st.session_state["viewersCount"] = data["viewersCount"]
 
 st.title("ZEVENT 2026 light stats")
 updated_at = st.session_state.get("updated_at")
@@ -49,14 +54,10 @@ if updated_at is None:
     st.caption("Dernière mise à jour : indisponible")
 else:
     st.caption(f"Dernière mise à jour : {updated_at.isoformat(timespec='seconds')}")
+st.link_button("Faire un don global", st.session_state["globalDonationUrl"])
 
 if st.button("Rafraîchir les données"):
     data = fetch_data()
-    st.session_state["live"] = data["live"]
-    st.session_state["globalDonationUrl"] = data["globalDonationUrl"]
-    st.session_state["donationAmount"] = data["donationAmount"]
-    st.session_state["viewersCount"] = data["viewersCount"]
-elif "live" not in st.session_state:
     st.session_state["live"] = data["live"]
     st.session_state["globalDonationUrl"] = data["globalDonationUrl"]
     st.session_state["donationAmount"] = data["donationAmount"]
@@ -166,8 +167,6 @@ chart_col1.caption("Top 10 viewers")
 chart_col1.bar_chart(top_viewers, height=300)
 chart_col2.caption("Top 10 dons")
 chart_col2.bar_chart(top_donations, height=300)
-
-st.markdown(f"[Faire un don global]({st.session_state['globalDonationUrl']})")
 
 st.markdown("---")
 st.markdown("🟢 [stats.zevent.fr - Statistiques](https://stats.zevent.fr/)")
