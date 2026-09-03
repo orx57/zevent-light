@@ -144,6 +144,23 @@ st.dataframe(
     use_container_width=True,
 )
 
+st.subheader("Classements")
+chart_col1, chart_col2 = st.columns(2)
+
+top_viewers = (
+    df_sorted.nlargest(10, "viewersAmount")
+    .set_index("display")["viewersAmount"]
+)
+top_donations = (
+    df_sorted.nlargest(10, "donationAmount")
+    .set_index("display")["donationAmount"]
+)
+
+chart_col1.caption("Top 10 viewers")
+chart_col1.bar_chart(top_viewers, height=300)
+chart_col2.caption("Top 10 dons")
+chart_col2.bar_chart(top_donations, height=300)
+
 st.markdown(f"[Faire un don global]({st.session_state['globalDonationUrl']})")
 
 st.markdown("---")
