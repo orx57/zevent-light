@@ -110,7 +110,7 @@ if online_only:
 df_sorted = df.sort_values(by=sort_by, ascending=False).reset_index(drop=True)
 rank_badges = {1: "🥇", 2: "🥈", 3: "🥉"}
 df_sorted["position"] = [
-    f"{rank_badges[position]} {position}"
+    f"{position} {rank_badges[position]}"
     if position in rank_badges
     else str(position)
     for position in range(1, len(df_sorted) + 1)
@@ -124,17 +124,9 @@ df_sorted = df_sorted[
     ]
     + ["twitchUrl"]
 ]
-styled_df = df_sorted.style.map(
-    lambda value: (
-        "background-color: #e8f5e9; color: #137333; font-weight: 600"
-        if value == "🟢"
-        else ""
-    ),
-    subset=["online"],
-)
 
 st.dataframe(
-    styled_df,
+    df_sorted,
     column_config={
         "position": st.column_config.TextColumn("Position", width="small"),
         "avatar": st.column_config.ImageColumn("Avatar", width="small"),
