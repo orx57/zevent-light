@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import pandas as pd
 import requests
 import streamlit as st
@@ -7,7 +9,9 @@ def fetch_data():
     try:
         response = requests.get("https://zevent.fr/api/", timeout=10)
         response.raise_for_status()
-        return response.json()
+        data = response.json()
+        st.session_state["updated_at"] = datetime.now()
+        return data
     except requests.RequestException:
         st.error("Impossible de récupérer les données du ZEvent.")
         st.stop()
@@ -19,6 +23,9 @@ def fetch_data():
 data = fetch_data() if "live" not in st.session_state else None
 
 st.title("ZEVENT 2026 light stats")
+st.caption(
+    f"Dernière mise à jour : {st.session_state['updated_at']:%d/%m/%Y à %H:%M:%S}"
+)
 
 if st.button("Rafraîchir les données"):
     data = fetch_data()
