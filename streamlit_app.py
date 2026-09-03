@@ -4,9 +4,16 @@ import streamlit as st
 
 
 def fetch_data():
-    response = requests.get("https://zevent.fr/api/")
-    data = response.json()
-    return data
+    try:
+        response = requests.get("https://zevent.fr/api/", timeout=10)
+        response.raise_for_status()
+        return response.json()
+    except requests.RequestException:
+        st.error("Impossible de récupérer les données du ZEvent.")
+        st.stop()
+    except ValueError:
+        st.error("L'API du ZEvent a renvoyé des données invalides.")
+        st.stop()
 
 
 data = fetch_data() if "live" not in st.session_state else None
