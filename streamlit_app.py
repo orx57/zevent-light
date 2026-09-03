@@ -48,7 +48,8 @@ df = pd.DataFrame(
     [
         {
             "avatar": item.get("profileUrl"),
-            "display": f"https://twitch.tv/{item.get('twitch')}",
+            "display": item.get("display"),
+            "twitchUrl": f"https://twitch.tv/{item.get('twitch')}",
             "online": "🟢" if item.get("online") else "🔴",
             "game": item.get("game"),
             "viewersAmount": item.get("viewersAmount", {}).get("number", 0),
@@ -74,9 +75,8 @@ st.dataframe(
     column_config={
         "position": st.column_config.NumberColumn("Position"),
         "avatar": st.column_config.ImageColumn("Avatar"),
-        "display": st.column_config.LinkColumn(
-            "Streamer", display_text=r"https://twitch.tv/(.*)"
-        ),
+        "display": st.column_config.TextColumn("Streamer"),
+        "twitchUrl": st.column_config.LinkColumn("Twitch", display_text="↗"),
         "online": st.column_config.TextColumn("En ligne"),
         "game": st.column_config.TextColumn("Jeu"),
         "viewersAmount": st.column_config.NumberColumn("Viewers", format="localized"),
