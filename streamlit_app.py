@@ -1,9 +1,12 @@
 import time
-from datetime import datetime, timezone
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import requests
 import streamlit as st
+
+FRENCH_TIMEZONE = ZoneInfo("Europe/Paris")
 
 
 @st.fragment(run_every="60s")
@@ -27,7 +30,7 @@ def fetch_data():
         response = requests.get("https://zevent.fr/api/", timeout=10)
         response.raise_for_status()
         data = response.json()
-        st.session_state["updated_at"] = datetime.now(timezone.utc)
+        st.session_state["updated_at"] = datetime.now(FRENCH_TIMEZONE)
         return data
     except requests.RequestException:
         st.error("Impossible de récupérer les données du ZEvent.")
@@ -140,7 +143,7 @@ st.markdown("🟢 [zevent-stats.louis-julien.dev - ZEvent stats](https://zevent-
 st.markdown("🔴 [zevent.gdoc.fr - Statistiques](https://zevent.gdoc.fr/statistics)")
 st.markdown("🔴 [astucesweb.fr - ZEVENT](https://astucesweb.fr/projets/zevent/)")
 
-version_datetime = datetime.now(timezone.utc)
+version_datetime = datetime.now(FRENCH_TIMEZONE)
 iso_calendar = version_datetime.isocalendar()
 version = (
     f"v{iso_calendar.year}.{iso_calendar.week:02d}."
