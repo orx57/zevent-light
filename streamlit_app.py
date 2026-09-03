@@ -11,7 +11,7 @@ def fetch_data():
 
 data = fetch_data() if "live" not in st.session_state else None
 
-st.title("ZEVENT 2025 light stats")
+st.title("ZEVENT 2026 light stats")
 
 if st.button("Rafraîchir les données"):
     data = fetch_data()
