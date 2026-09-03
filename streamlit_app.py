@@ -118,9 +118,17 @@ df_sorted = df_sorted[
     ]
     + ["twitchUrl"]
 ]
+styled_df = df_sorted.style.map(
+    lambda value: (
+        "background-color: #e8f5e9; color: #137333; font-weight: 600"
+        if value == "🟢"
+        else ""
+    ),
+    subset=["online"],
+)
 
 st.dataframe(
-    df_sorted,
+    styled_df,
     column_config={
         "position": st.column_config.NumberColumn("Position", width="small"),
         "avatar": st.column_config.ImageColumn("Avatar", width="small"),
