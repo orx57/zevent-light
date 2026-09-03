@@ -1,8 +1,24 @@
 from datetime import datetime
+import time
 
 import pandas as pd
 import requests
 import streamlit as st
+
+
+@st.fragment(run_every="60s")
+def auto_refresh():
+    now = time.monotonic()
+    last_refresh = st.session_state.get("last_auto_refresh")
+
+    if last_refresh is None:
+        st.session_state["last_auto_refresh"] = now
+    elif now - last_refresh >= 60:
+        st.session_state["last_auto_refresh"] = now
+        st.rerun()
+
+
+auto_refresh()
 
 
 def fetch_data():
