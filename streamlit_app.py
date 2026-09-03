@@ -48,13 +48,11 @@ df = pd.DataFrame(
     [
         {
             "avatar": item.get("profileUrl"),
-            "display": item.get("display"),
-            "twitch": item.get("twitch"),
+            "display": f"https://twitch.tv/{item.get('twitch')}",
             "online": "🟢" if item.get("online") else "🔴",
             "game": item.get("game"),
             "viewersAmount": item.get("viewersAmount", {}).get("number", 0),
             "donationAmount": item.get("donationAmount", {}).get("number", 0),
-            "twitchUrl": f"https://twitch.tv/{item.get('twitch')}",
             "donationUrl": item.get("donationUrl"),
         }
         for item in live
@@ -76,13 +74,13 @@ st.dataframe(
     column_config={
         "position": st.column_config.NumberColumn("Position"),
         "avatar": st.column_config.ImageColumn("Avatar"),
-        "display": st.column_config.TextColumn("Streamer"),
-        "twitch": None,
+        "display": st.column_config.LinkColumn(
+            "Streamer", display_text=r"https://twitch.tv/(.*)"
+        ),
         "online": st.column_config.TextColumn("En ligne"),
         "game": st.column_config.TextColumn("Jeu"),
         "viewersAmount": st.column_config.NumberColumn("Viewers", format="localized"),
         "donationAmount": st.column_config.NumberColumn("Donations (€)", format="euro"),
-        "twitchUrl": st.column_config.LinkColumn("Twitch", display_text="Twitch"),
         "donationUrl": st.column_config.LinkColumn("Don", display_text="Don"),
     },
     hide_index=True,
