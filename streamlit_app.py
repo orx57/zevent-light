@@ -48,7 +48,7 @@ updated_at = st.session_state.get("updated_at")
 if updated_at is None:
     st.caption("Dernière mise à jour : indisponible")
 else:
-    st.caption(f"Dernière mise à jour : {updated_at:%d/%m/%Y à %H:%M:%S}")
+    st.caption(f"Dernière mise à jour : {updated_at.isoformat(timespec='seconds')}")
 
 if st.button("Rafraîchir les données"):
     data = fetch_data()
