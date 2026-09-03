@@ -7,6 +7,7 @@ import requests
 import streamlit as st
 
 FRENCH_TIMEZONE = ZoneInfo("Europe/Paris")
+st.set_page_config(page_title="ZEVENT Stats", page_icon="📊", layout="wide")
 
 
 @st.fragment(run_every="60s")
