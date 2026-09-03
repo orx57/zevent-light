@@ -1,5 +1,5 @@
-from datetime import datetime
 import time
+from datetime import datetime, timezone
 
 import pandas as pd
 import requests
@@ -15,6 +15,7 @@ def auto_refresh():
         st.session_state["last_auto_refresh"] = now
     elif now - last_refresh >= 60:
         st.session_state["last_auto_refresh"] = now
+        st.session_state.pop("live", None)
         st.rerun()
 
 
@@ -26,7 +27,7 @@ def fetch_data():
         response = requests.get("https://zevent.fr/api/", timeout=10)
         response.raise_for_status()
         data = response.json()
-        st.session_state["updated_at"] = datetime.now()
+        st.session_state["updated_at"] = datetime.now(timezone.utc)
         return data
     except requests.RequestException:
         st.error("Impossible de récupérer les données du ZEvent.")
@@ -39,9 +40,11 @@ def fetch_data():
 data = fetch_data() if "live" not in st.session_state else None
 
 st.title("ZEVENT 2026 light stats")
-st.caption(
-    f"Dernière mise à jour : {st.session_state['updated_at']:%d/%m/%Y à %H:%M:%S}"
-)
+updated_at = st.session_state.get("updated_at")
+if updated_at is None:
+    st.caption("Dernière mise à jour : indisponible")
+else:
+    st.caption(f"Dernière mise à jour : {updated_at:%d/%m/%Y à %H:%M:%S}")
 
 if st.button("Rafraîchir les données"):
     data = fetch_data()
