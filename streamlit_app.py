@@ -77,6 +77,7 @@ st.dataframe(
         "position": st.column_config.NumberColumn("Position"),
         "avatar": st.column_config.ImageColumn("Avatar"),
         "display": st.column_config.TextColumn("Streamer"),
+        "twitch": None,
         "online": st.column_config.TextColumn("En ligne"),
         "game": st.column_config.TextColumn("Jeu"),
         "viewersAmount": st.column_config.NumberColumn("Viewers", format="localized"),
