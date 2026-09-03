@@ -122,15 +122,23 @@ df_sorted = df_sorted[
 st.dataframe(
     df_sorted,
     column_config={
-        "position": st.column_config.NumberColumn("Position"),
-        "avatar": st.column_config.ImageColumn("Avatar"),
-        "display": st.column_config.TextColumn("Streamer"),
-        "twitchUrl": st.column_config.LinkColumn("Twitch", display_text="Twitch"),
-        "online": st.column_config.TextColumn("En ligne"),
-        "game": st.column_config.TextColumn("Jeu"),
-        "viewersAmount": st.column_config.NumberColumn("Viewers", format="localized"),
-        "donationAmount": st.column_config.NumberColumn("Donations (€)", format="euro"),
-        "donationUrl": st.column_config.LinkColumn("Don", display_text="Don"),
+        "position": st.column_config.NumberColumn("Position", width="small"),
+        "avatar": st.column_config.ImageColumn("Avatar", width="small"),
+        "display": st.column_config.TextColumn("Streamer", width="medium"),
+        "twitchUrl": st.column_config.LinkColumn(
+            "Twitch", display_text="Twitch", width="small"
+        ),
+        "online": st.column_config.TextColumn("En ligne", width="small"),
+        "game": st.column_config.TextColumn("Jeu", width="medium"),
+        "viewersAmount": st.column_config.NumberColumn(
+            "Viewers", format="localized", width="small"
+        ),
+        "donationAmount": st.column_config.NumberColumn(
+            "Donations (€)", format="euro", width="small"
+        ),
+        "donationUrl": st.column_config.LinkColumn(
+            "Don", display_text="Don", width="small"
+        ),
     },
     hide_index=True,
     use_container_width=True,
