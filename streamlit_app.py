@@ -126,7 +126,7 @@ st.dataframe(
         "avatar": st.column_config.ImageColumn("Avatar", width="small"),
         "display": st.column_config.TextColumn("Streamer", width="medium"),
         "twitchUrl": st.column_config.LinkColumn(
-            "Twitch", display_text="Twitch", width="small"
+            "Chaîne", display_text="Ouvrir", width="small"
         ),
         "online": st.column_config.TextColumn("En ligne", width="small"),
         "game": st.column_config.TextColumn("Jeu", width="medium"),
@@ -137,7 +137,7 @@ st.dataframe(
             "Donations (€)", format="euro", width="small"
         ),
         "donationUrl": st.column_config.LinkColumn(
-            "Don", display_text="Don", width="small"
+            "Faire un don", display_text="Don", width="small"
         ),
     },
     hide_index=True,
