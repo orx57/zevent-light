@@ -139,3 +139,11 @@ st.markdown("🟢 [stats.zevent.fr - Statistiques](https://stats.zevent.fr/)")
 st.markdown("🟢 [zevent-stats.louis-julien.dev - ZEvent stats](https://zevent-stats.louis-julien.dev/)")
 st.markdown("🔴 [zevent.gdoc.fr - Statistiques](https://zevent.gdoc.fr/statistics)")
 st.markdown("🔴 [astucesweb.fr - ZEVENT](https://astucesweb.fr/projets/zevent/)")
+
+version_datetime = datetime.now(timezone.utc)
+iso_calendar = version_datetime.isocalendar()
+version = (
+    f"v{iso_calendar.year}.{iso_calendar.week:02d}."
+    f"{iso_calendar.weekday}-{version_datetime:%H%M}"
+)
+st.caption(version)
