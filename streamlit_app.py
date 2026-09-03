@@ -69,6 +69,7 @@ sort_by = st.selectbox(
 
 df_sorted = df.sort_values(by=sort_by, ascending=False).reset_index(drop=True)
 df_sorted["position"] = df_sorted.index + 1
+df_sorted = df_sorted[["position"] + [column for column in df_sorted.columns if column != "position"]]
 
 st.dataframe(
     df_sorted,
