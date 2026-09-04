@@ -22,17 +22,52 @@ st.markdown(
 
         [data-testid="stAppViewContainer"] {
             background: #f7f7f8;
+            color: var(--zevent-ink);
+            font-family: "Trebuchet MS", "Segoe UI", sans-serif;
         }
 
         [data-testid="stMainBlockContainer"] {
-            padding-top: 3rem;
+            padding-top: 2rem;
             padding-bottom: 3rem;
         }
 
         h1 {
             color: var(--zevent-ink);
+            font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
             letter-spacing: 0;
             margin-bottom: 0.25rem;
+        }
+
+        button[kind="primary"] {
+            background: var(--zevent-accent);
+            border-color: var(--zevent-accent);
+            color: #ffffff;
+        }
+
+        button[kind="primary"]:hover {
+            background: #c9402e;
+            border-color: #c9402e;
+            color: #ffffff;
+        }
+
+        [data-baseweb="input"] > div,
+        [data-baseweb="select"] > div {
+            background: var(--zevent-surface);
+            border-color: var(--zevent-border);
+            border-radius: 0.55rem;
+        }
+
+        [data-baseweb="input"] > div:focus-within,
+        [data-baseweb="select"] > div:focus-within {
+            border-color: var(--zevent-accent);
+            box-shadow: 0 0 0 1px var(--zevent-accent);
+        }
+
+        [data-testid="stSegmentedControl"] button[aria-checked="true"] {
+            background: var(--zevent-accent);
+            color: #ffffff;
         }
 
         [data-testid="stMetric"] {
@@ -198,6 +233,7 @@ with header_actions:
     st.link_button(
         "Faire un don global",
         st.session_state["globalDonationUrl"],
+        type="primary",
         use_container_width=True,
     )
     if st.button("Rafraîchir les données", use_container_width=True):
