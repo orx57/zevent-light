@@ -324,6 +324,7 @@ for footer_col, (name, description, url) in zip(
     footer_col.markdown(f"[{name}]({url})")
     footer_col.caption(description)
 
-footer_col1, footer_col2 = st.columns(2)
-footer_col1.caption("Données du ZEVENT")
-footer_col2.caption(version)
+with st.container(border=True):
+    footer_col1, footer_col2 = st.columns(2)
+    footer_col1.caption("Données du ZEVENT")
+    footer_col2.caption(f"Version {version}")
