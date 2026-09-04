@@ -124,7 +124,12 @@ with header_title:
         if updated_at is None
         else f"Dernière mise à jour : {updated_at:%d/%m/%Y à %H:%M:%S}"
     )
-    with st.container(horizontal=True, vertical_alignment="center", gap="small"):
+    with st.container(
+        horizontal=True,
+        horizontal_alignment="left",
+        vertical_alignment="center",
+        gap="small",
+    ):
         event_label, event_color, event_icon = st.session_state.get(
             "event_status", ("Statut indisponible", "gray", ":material/help:")
         )
