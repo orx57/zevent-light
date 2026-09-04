@@ -2,6 +2,7 @@ import time
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
+import altair as alt
 import pandas as pd
 import requests
 import streamlit as st
@@ -302,22 +303,48 @@ st.dataframe(
     use_container_width=True,
 )
 
-st.markdown('<div class="section-heading">Classement des streamers</div>', unsafe_allow_html=True)
+st.markdown(
+    '<div class="section-heading">Classement des streamers</div>',
+    unsafe_allow_html=True,
+)
 chart_col1, chart_col2 = st.columns(2)
 
-top_viewers = (
-    df_sorted.nlargest(10, "viewersAmount")
-    .set_index("display")["viewersAmount"]
-)
-top_donations = (
-    df_sorted.nlargest(10, "donationAmount")
-    .set_index("display")["donationAmount"]
-)
+top_viewers = df_sorted.nlargest(10, "viewersAmount")
+top_donations = df_sorted.nlargest(10, "donationAmount")
 
-chart_col1.caption("Top 10 viewers")
-chart_col1.bar_chart(top_viewers, height=300)
-chart_col2.caption("Top 10 dons")
-chart_col2.bar_chart(top_donations, height=300)
+with chart_col1:
+    st.caption("Top 10 viewers")
+    viewers_chart = (
+        alt.Chart(top_viewers)
+        .mark_bar(cornerRadiusEnd=4, color="#e6533c")
+        .encode(
+            x=alt.X("viewersAmount:Q", title="Viewers"),
+            y=alt.Y("display:N", sort="-x", title=None),
+            tooltip=[
+                alt.Tooltip("display:N", title="Streamer"),
+                alt.Tooltip("viewersAmount:Q", title="Viewers", format=",.0f"),
+            ],
+        )
+        .properties(height=300)
+    )
+    st.altair_chart(viewers_chart, use_container_width=True)
+
+with chart_col2:
+    st.caption("Top 10 dons")
+    donations_chart = (
+        alt.Chart(top_donations)
+        .mark_bar(cornerRadiusEnd=4, color="#6f8f3d")
+        .encode(
+            x=alt.X("donationAmount:Q", title="Dons (€)"),
+            y=alt.Y("display:N", sort="-x", title=None),
+            tooltip=[
+                alt.Tooltip("display:N", title="Streamer"),
+                alt.Tooltip("donationAmount:Q", title="Dons (€)", format=",.2f"),
+            ],
+        )
+        .properties(height=300)
+    )
+    st.altair_chart(donations_chart, use_container_width=True)
 
 st.markdown("---")
 st.markdown("- [stats.zevent.fr - Statistiques](https://stats.zevent.fr/)")
