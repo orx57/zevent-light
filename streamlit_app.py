@@ -130,6 +130,7 @@ with header_title:
         )
         st.badge(event_label, icon=event_icon, color=event_color)
         st.caption(update_label)
+    st.caption("Actualisation automatique toutes les 60 secondes")
 
 with header_actions:
     st.link_button(
