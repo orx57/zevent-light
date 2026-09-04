@@ -13,15 +13,28 @@ st.markdown(
     """
     <style>
         :root {
-            --zevent-ink: #292b38;
-            --zevent-muted: #737784;
+            --zevent-ink: var(--text-color, #292b38);
+            --zevent-muted: var(--secondary-text-color, #737784);
             --zevent-accent: #e6533c;
-            --zevent-surface: #ffffff;
+            --zevent-surface: var(--secondary-background-color, #ffffff);
             --zevent-border: #e4e5e9;
         }
 
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --zevent-ink: #f1f3f5;
+                --zevent-muted: #a8adb8;
+                --zevent-surface: #171a21;
+                --zevent-border: #303642;
+            }
+
+            [data-testid="stAppViewContainer"] {
+                background: #0f1116;
+            }
+        }
+
         [data-testid="stAppViewContainer"] {
-            background: #f7f7f8;
+            background: var(--background-color, #f7f7f8);
             color: var(--zevent-ink);
             font-family: "Trebuchet MS", "Segoe UI", sans-serif;
         }
@@ -63,6 +76,17 @@ st.markdown(
         [data-baseweb="select"] > div:focus-within {
             border-color: var(--zevent-accent);
             box-shadow: 0 0 0 1px var(--zevent-accent);
+        }
+
+        div.stButton > button {
+            background: var(--zevent-surface);
+            border-color: var(--zevent-border);
+            color: var(--zevent-ink);
+        }
+
+        div.stButton > button:hover {
+            border-color: var(--zevent-accent);
+            color: var(--zevent-accent);
         }
 
         [data-testid="stSegmentedControl"] button[aria-checked="true"] {
@@ -213,7 +237,7 @@ if "live" not in st.session_state:
     st.session_state["donationAmount"] = data["donationAmount"]
     st.session_state["viewersCount"] = data["viewersCount"]
 
-header_title, header_actions = st.columns([3, 1], vertical_alignment="center")
+header_title, header_actions = st.columns([3, 1], vertical_alignment="top")
 
 with header_title:
     st.title("ZEVENT 2026")
