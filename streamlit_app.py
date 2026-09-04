@@ -217,7 +217,7 @@ with st.container(border=True):
             format_func=lambda option: (
                 ":material/live_tv: En direct" if option == "En direct" else "Tous"
             ),
-            default="En direct",
+            default="Tous",
             selection_mode="single",
             label_visibility="collapsed",
         )

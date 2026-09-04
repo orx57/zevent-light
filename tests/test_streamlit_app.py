@@ -42,13 +42,12 @@ def make_app():
     return app.run()
 
 
-def test_live_view_is_selected_by_default():
+def test_all_view_is_selected_by_default():
     app = make_app()
 
     assert not app.exception
-    assert app.segmented_control[0].value == "En direct"
-    assert len(app.dataframe[0].value) == 1
-    assert app.dataframe[0].value.iloc[0]["display"] == "AliceLive"
+    assert app.segmented_control[0].value == "Tous"
+    assert len(app.dataframe[0].value) == 2
 
 
 def test_all_view_and_search_filter_streamers():
@@ -67,7 +66,7 @@ def test_all_view_and_search_filter_streamers():
 def test_game_filter_limits_streamers():
     app = make_app()
 
-    app.selectbox[1].select("ZEVENT").run()
+    app.selectbox[0].select("ZEVENT").run()
 
     assert not app.exception
     assert len(app.dataframe[0].value) == 1
