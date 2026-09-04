@@ -134,15 +134,11 @@ with header_title:
             "event_status", ("Statut indisponible", "gray", ":material/help:")
         )
         st.badge(event_label, icon=event_icon, color=event_color)
-        st.caption(update_label)
-        with st.popover(
-            "Informations sur l'actualisation",
-            icon=":material/help_outline:",
-            type="tertiary",
-            width="content",
+        st.caption(
+            update_label,
             help="Les données sont automatiquement actualisées toutes les 60 secondes.",
-        ):
-            st.write("Actualisation automatique toutes les 60 secondes.")
+            width="content",
+        )
 
 with header_actions:
     st.link_button(
