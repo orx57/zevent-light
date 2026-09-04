@@ -9,32 +9,38 @@ import streamlit as st
 
 FRENCH_TIMEZONE = ZoneInfo("Europe/Paris")
 st.set_page_config(page_title="ZEVENT Stats", page_icon="📊", layout="wide")
+is_dark_theme = st.context.theme.type == "dark"
+theme_colors = (
+    {
+        "background": "#0f1116",
+        "ink": "#f1f3f5",
+        "muted": "#a8adb8",
+        "surface": "#171a21",
+        "border": "#303642",
+    }
+    if is_dark_theme
+    else {
+        "background": "#f7f7f8",
+        "ink": "#292b38",
+        "muted": "#737784",
+        "surface": "#ffffff",
+        "border": "#e4e5e9",
+    }
+)
 st.markdown(
     """
     <style>
         :root {
-            --zevent-ink: var(--text-color, #292b38);
-            --zevent-muted: var(--secondary-text-color, #737784);
+            --zevent-background: __BACKGROUND__;
+            --zevent-ink: __INK__;
+            --zevent-muted: __MUTED__;
             --zevent-accent: #e6533c;
-            --zevent-surface: var(--secondary-background-color, #ffffff);
-            --zevent-border: #e4e5e9;
-        }
-
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --zevent-ink: #f1f3f5;
-                --zevent-muted: #a8adb8;
-                --zevent-surface: #171a21;
-                --zevent-border: #303642;
-            }
-
-            [data-testid="stAppViewContainer"] {
-                background: #0f1116;
-            }
+            --zevent-surface: __SURFACE__;
+            --zevent-border: __BORDER__;
         }
 
         [data-testid="stAppViewContainer"] {
-            background: var(--background-color, #f7f7f8);
+            background: var(--zevent-background);
             color: var(--zevent-ink);
             font-family: "Trebuchet MS", "Segoe UI", sans-serif;
         }
@@ -194,7 +200,12 @@ st.markdown(
             overflow: hidden;
         }
     </style>
-    """,
+    """
+    .replace("__BACKGROUND__", theme_colors["background"])
+    .replace("__INK__", theme_colors["ink"])
+    .replace("__MUTED__", theme_colors["muted"])
+    .replace("__SURFACE__", theme_colors["surface"])
+    .replace("__BORDER__", theme_colors["border"]),
     unsafe_allow_html=True,
 )
 
