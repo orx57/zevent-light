@@ -97,6 +97,7 @@ def fetch_data():
     try:
         data = load_data()
         st.session_state["updated_at"] = datetime.now(FRENCH_TIMEZONE)
+        st.session_state["event_status"] = get_event_status(data)
         return data
     except requests.RequestException:
         st.error("Impossible de récupérer les données du ZEvent.")
@@ -112,7 +113,6 @@ if "live" not in st.session_state:
     st.session_state["globalDonationUrl"] = data["globalDonationUrl"]
     st.session_state["donationAmount"] = data["donationAmount"]
     st.session_state["viewersCount"] = data["viewersCount"]
-    st.session_state["event_status"] = get_event_status(data)
 
 header_title, header_actions = st.columns([3, 1], vertical_alignment="top")
 
@@ -149,7 +149,6 @@ with header_actions:
             st.session_state["globalDonationUrl"] = data["globalDonationUrl"]
             st.session_state["donationAmount"] = data["donationAmount"]
             st.session_state["viewersCount"] = data["viewersCount"]
-            st.session_state["event_status"] = get_event_status(data)
 
 live = st.session_state["live"]
 
