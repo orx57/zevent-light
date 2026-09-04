@@ -48,13 +48,24 @@ if "live" not in st.session_state:
     st.session_state["donationAmount"] = data["donationAmount"]
     st.session_state["viewersCount"] = data["viewersCount"]
 
-st.title("ZEVENT 2026 light stats")
-updated_at = st.session_state.get("updated_at")
-if updated_at is None:
-    st.caption("Dernière mise à jour : indisponible")
-else:
-    st.caption(f"Dernière mise à jour : {updated_at.isoformat(timespec='seconds')}")
-st.link_button("Faire un don global", st.session_state["globalDonationUrl"])
+header_title, header_actions = st.columns([3, 1], vertical_alignment="center")
+
+with header_title:
+    st.title("ZEVENT 2026")
+    updated_at = st.session_state.get("updated_at")
+    update_label = (
+        "Dernière mise à jour : indisponible"
+        if updated_at is None
+        else f"Dernière mise à jour : {updated_at:%d/%m/%Y à %H:%M:%S}"
+    )
+    st.caption(f"🟢 Direct · {update_label}")
+
+with header_actions:
+    st.link_button(
+        "Faire un don global",
+        st.session_state["globalDonationUrl"],
+        use_container_width=True,
+    )
 
 if st.button("Rafraîchir les données"):
     data = fetch_data()
