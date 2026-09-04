@@ -87,17 +87,19 @@ col2.metric(
     "Dons totaux (€)", st.session_state["donationAmount"]["formatted"], border=True
 )
 col3.metric(
-    "En direct",
+    "Streamers en direct",
     en_ligne,
-    delta=f"{en_ligne / len(live):.0%} du total" if live else "0% du total",
-    delta_color="off",
+    help=(
+        f"{en_ligne / len(live):.0%} des streamers sont en direct."
+        if live
+        else "Aucun streamer disponible."
+    ),
     border=True,
 )
 col4.metric(
     "Streamers totaux",
     len(live),
-    delta=f"{hors_ligne} hors ligne",
-    delta_color="off",
+    help=f"{en_ligne} en direct · {hors_ligne} hors ligne",
     border=True,
 )
 
