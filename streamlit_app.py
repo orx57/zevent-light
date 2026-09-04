@@ -234,8 +234,14 @@ with st.container(border=True):
             label_visibility="collapsed",
         )
     with filter_col:
-        st.markdown('<div class="toolbar-label">Filtrer</div>', unsafe_allow_html=True)
-        online_only = st.checkbox("En ligne uniquement")
+        st.markdown('<div class="toolbar-label">Afficher</div>', unsafe_allow_html=True)
+        view_mode = st.segmented_control(
+            "Afficher",
+            options=["En direct", "Tous"],
+            default="En direct",
+            selection_mode="single",
+            label_visibility="collapsed",
+        )
 
 if search_query:
     search_mask = df["display"].str.contains(search_query, case=False, na=False)
@@ -244,8 +250,14 @@ if search_query:
     )
     df = df[search_mask]
 
-if online_only:
+if view_mode == "En direct":
     df = df[df["online"] == "🟢 En ligne"]
+
+st.caption(
+    f"{len(df)} streamer{'s' if len(df) != 1 else ''} affiché"
+    f"{'s' if len(df) != 1 else ''} · "
+    f"{en_ligne} en direct au total"
+)
 
 df_sorted = df.sort_values(by=sort_by, ascending=False).reset_index(drop=True)
 rank_badges = {1: "🥇", 2: "🥈", 3: "🥉"}
