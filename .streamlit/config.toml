@@ -1,0 +1,27 @@
+[theme]
+baseRadius = "medium"
+buttonRadius = "medium"
+font = "sans-serif"
+linkUnderline = false
+showWidgetBorder = true
+showSidebarBorder = true
+
+[theme.light]
+primaryColor = "#c9402e"
+backgroundColor = "#f7f7f8"
+secondaryBackgroundColor = "#ffffff"
+textColor = "#292b38"
+borderColor = "#e4e5e9"
+dataframeBorderColor = "#e4e5e9"
+dataframeHeaderBackgroundColor = "#f0f1f3"
+chartCategoricalColors = ["#e6533c", "#6f8f3d", "#3f6f9f", "#c98b32"]
+
+[theme.dark]
+primaryColor = "#c9402e"
+backgroundColor = "#0f1116"
+secondaryBackgroundColor = "#171a21"
+textColor = "#f1f3f5"
+borderColor = "#303642"
+dataframeBorderColor = "#303642"
+dataframeHeaderBackgroundColor = "#1f2430"
+chartCategoricalColors = ["#ff6b57", "#91b957", "#79a7d3", "#e0ad54"]

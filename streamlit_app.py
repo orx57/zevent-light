@@ -8,205 +8,10 @@ import requests
 import streamlit as st
 
 FRENCH_TIMEZONE = ZoneInfo("Europe/Paris")
-st.set_page_config(page_title="ZEVENT Stats", page_icon="📊", layout="wide")
-is_dark_theme = st.context.theme.type == "dark"
-theme_colors = (
-    {
-        "background": "#0f1116",
-        "ink": "#f1f3f5",
-        "muted": "#a8adb8",
-        "surface": "#171a21",
-        "border": "#303642",
-    }
-    if is_dark_theme
-    else {
-        "background": "#f7f7f8",
-        "ink": "#292b38",
-        "muted": "#737784",
-        "surface": "#ffffff",
-        "border": "#e4e5e9",
-    }
-)
-st.markdown(
-    """
-    <style>
-        :root {
-            --zevent-background: __BACKGROUND__;
-            --zevent-ink: __INK__;
-            --zevent-muted: __MUTED__;
-            --zevent-accent: #e6533c;
-            --zevent-surface: __SURFACE__;
-            --zevent-border: __BORDER__;
-        }
-
-        [data-testid="stAppViewContainer"] {
-            background: var(--zevent-background);
-            color: var(--zevent-ink);
-            font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-        }
-
-        [data-testid="stMainBlockContainer"] {
-            padding-top: 2rem;
-            padding-bottom: 3rem;
-        }
-
-        h1 {
-            color: var(--zevent-ink);
-            font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-            font-size: clamp(2rem, 4vw, 3rem);
-            font-weight: 800;
-            letter-spacing: 0;
-            margin-bottom: 0.25rem;
-        }
-
-        button[kind="primary"] {
-            background: var(--zevent-accent);
-            border-color: var(--zevent-accent);
-            color: #ffffff;
-        }
-
-        button[kind="primary"]:hover {
-            background: #c9402e;
-            border-color: #c9402e;
-            color: #ffffff;
-        }
-
-        [data-baseweb="input"] > div,
-        [data-baseweb="select"] > div {
-            background: var(--zevent-surface);
-            border-color: var(--zevent-border);
-            border-radius: 0.55rem;
-        }
-
-        [data-baseweb="input"] > div:focus-within,
-        [data-baseweb="select"] > div:focus-within {
-            border-color: var(--zevent-accent);
-            box-shadow: 0 0 0 1px var(--zevent-accent);
-        }
-
-        div.stButton > button {
-            background: var(--zevent-surface);
-            border-color: var(--zevent-border);
-            color: var(--zevent-ink);
-        }
-
-        div.stButton > button:hover {
-            border-color: var(--zevent-accent);
-            color: var(--zevent-accent);
-        }
-
-        [data-testid="stSegmentedControl"] button[aria-checked="true"] {
-            background: var(--zevent-accent);
-            color: #ffffff;
-        }
-
-        [data-testid="stMetric"] {
-            background: var(--zevent-surface);
-            border: 1px solid var(--zevent-border);
-            border-top: 3px solid var(--zevent-accent);
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 14px rgba(41, 43, 56, 0.05);
-            min-height: 7rem;
-            padding: 1rem 1.1rem;
-        }
-
-        [data-testid="stMetricLabel"] {
-            color: var(--zevent-muted);
-            font-weight: 600;
-        }
-
-        [data-testid="stMetricValue"] {
-            color: var(--zevent-ink);
-        }
-
-        .live-status {
-            align-items: center;
-            color: var(--zevent-muted);
-            display: flex;
-            font-size: 0.85rem;
-            gap: 0.45rem;
-        }
-
-        .live-status__dot {
-            background: #6eb644;
-            border-radius: 50%;
-            display: inline-block;
-            height: 0.55rem;
-            width: 0.55rem;
-        }
-
-        .live-status__label {
-            color: #4f8d2f;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-        }
-
-        .section-heading {
-            border-left: 4px solid var(--zevent-accent);
-            color: var(--zevent-ink);
-            font-size: 1.35rem;
-            font-weight: 700;
-            margin: 2.25rem 0 0.75rem;
-            padding-left: 0.75rem;
-        }
-
-        .toolbar-label {
-            color: var(--zevent-muted);
-            font-size: 0.78rem;
-            font-weight: 700;
-            margin-bottom: 0.35rem;
-        }
-
-        .footer-heading {
-            color: var(--zevent-ink);
-            font-size: 0.85rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-        }
-
-        .footer-link {
-            display: flex;
-            flex-direction: column;
-            gap: 0.2rem;
-        }
-
-        .footer-link a {
-            color: var(--zevent-ink);
-            font-weight: 700;
-            text-decoration: none;
-        }
-
-        .footer-link a:hover {
-            color: var(--zevent-accent);
-        }
-
-        .footer-link span,
-        .footer-meta {
-            color: var(--zevent-muted);
-            font-size: 0.78rem;
-        }
-
-        .footer-meta {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 1.5rem;
-        }
-
-        [data-testid="stDataFrame"] {
-            border: 1px solid var(--zevent-border);
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 14px rgba(41, 43, 56, 0.04);
-            overflow: hidden;
-        }
-    </style>
-    """
-    .replace("__BACKGROUND__", theme_colors["background"])
-    .replace("__INK__", theme_colors["ink"])
-    .replace("__MUTED__", theme_colors["muted"])
-    .replace("__SURFACE__", theme_colors["surface"])
-    .replace("__BORDER__", theme_colors["border"]),
-    unsafe_allow_html=True,
+st.set_page_config(
+    page_title="ZEVENT Stats",
+    page_icon=":material/bar_chart:",
+    layout="wide",
 )
 
 
@@ -251,27 +56,25 @@ if "live" not in st.session_state:
 header_title, header_actions = st.columns([3, 1], vertical_alignment="top")
 
 with header_title:
-    st.title("ZEVENT 2026")
+    st.title("ZEVENT 2026", icon=":material/bar_chart:")
     updated_at = st.session_state.get("updated_at")
     update_label = (
         "Dernière mise à jour : indisponible"
         if updated_at is None
         else f"Dernière mise à jour : {updated_at:%d/%m/%Y à %H:%M:%S}"
     )
-    st.markdown(
-        f'<div class="live-status"><span class="live-status__dot"></span>'
-        f'<span class="live-status__label">DIRECT</span><span>· {update_label}</span></div>',
-        unsafe_allow_html=True,
-    )
+    with st.container(horizontal=True, vertical_alignment="center", gap="small"):
+        st.badge("Direct", icon=":material/circle:", color="green")
+        st.caption(update_label)
 
 with header_actions:
     st.link_button(
         "Faire un don global",
         st.session_state["globalDonationUrl"],
         type="primary",
-        use_container_width=True,
+        width="stretch",
     )
-    if st.button("Rafraîchir les données", use_container_width=True):
+    if st.button("Rafraîchir les données", width="stretch"):
         data = fetch_data()
         st.session_state["live"] = data["live"]
         st.session_state["globalDonationUrl"] = data["globalDonationUrl"]
@@ -323,7 +126,7 @@ df = pd.DataFrame(
     ]
 )
 
-st.markdown('<div class="section-heading">Streamers</div>', unsafe_allow_html=True)
+st.subheader("Streamers")
 with st.container(border=True):
     search_col, sort_col, filter_col = st.columns([2, 1, 1], vertical_alignment="bottom")
     with search_col:
@@ -407,13 +210,10 @@ st.dataframe(
         ),
     },
     hide_index=True,
-    use_container_width=True,
+    width="stretch",
 )
 
-st.markdown(
-    '<div class="section-heading">Classement des streamers</div>',
-    unsafe_allow_html=True,
-)
+st.subheader("Classement des streamers")
 chart_col1, chart_col2 = st.columns(2)
 
 top_viewers = df_sorted.nlargest(10, "viewersAmount")
@@ -434,7 +234,7 @@ with chart_col1:
         )
         .properties(height=300)
     )
-    st.altair_chart(viewers_chart, use_container_width=True)
+    st.altair_chart(viewers_chart, width="stretch")
 
 with chart_col2:
     st.caption("Top 10 dons")
@@ -451,7 +251,7 @@ with chart_col2:
         )
         .properties(height=300)
     )
-    st.altair_chart(donations_chart, use_container_width=True)
+    st.altair_chart(donations_chart, width="stretch")
 
 version_datetime = datetime.now(FRENCH_TIMEZONE)
 iso_calendar = version_datetime.isocalendar()
@@ -461,7 +261,7 @@ version = (
 )
 
 st.markdown("---")
-st.markdown('<div class="footer-heading">Autres tableaux de bord</div>', unsafe_allow_html=True)
+st.subheader("Autres tableaux de bord")
 footer_col1, footer_col2, footer_col3, footer_col4 = st.columns(4)
 footer_links = [
     ("stats.zevent.fr", "Statistiques", "https://stats.zevent.fr/"),
@@ -476,13 +276,9 @@ footer_links = [
 for footer_col, (name, description, url) in zip(
     (footer_col1, footer_col2, footer_col3, footer_col4), footer_links
 ):
-    footer_col.markdown(
-        f'<div class="footer-link"><a href="{url}" target="_blank">{name} ↗</a>'
-        f"<span>{description}</span></div>",
-        unsafe_allow_html=True,
-    )
+    footer_col.markdown(f"[{name}]({url})")
+    footer_col.caption(description)
 
-st.markdown(
-    f'<div class="footer-meta"><span>Données du ZEVENT</span><span>{version}</span></div>',
-    unsafe_allow_html=True,
-)
+footer_col1, footer_col2 = st.columns(2)
+footer_col1.caption("Données du ZEVENT")
+footer_col2.caption(version)
