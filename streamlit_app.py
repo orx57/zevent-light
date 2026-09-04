@@ -28,7 +28,11 @@ def build_streamers_dataframe(live):
             {
                 "avatar": item.get("profileUrl"),
                 "display": item.get("display"),
-                "twitchUrl": f"https://twitch.tv/{item.get('twitch')}",
+                "twitchUrl": (
+                    f"https://twitch.tv/{item['twitch']}"
+                    if item.get("twitch")
+                    else None
+                ),
                 "online": "En ligne" if item.get("online") else "Hors ligne",
                 "game": item.get("game"),
                 "viewersAmount": item.get("viewersAmount", {}).get("number", 0),
@@ -40,7 +44,7 @@ def build_streamers_dataframe(live):
     )
 
 
-def filter_streamers(df, search_query, view_mode):
+def filter_streamers(df, search_query, game_filter, view_mode):
     filtered_df = df
     search_query = search_query.strip()
 
@@ -53,10 +57,23 @@ def filter_streamers(df, search_query, view_mode):
         )
         filtered_df = filtered_df[search_mask]
 
+    if game_filter != "Tous":
+        filtered_df = filtered_df[filtered_df["game"] == game_filter]
+
     if view_mode == "En direct":
         filtered_df = filtered_df[filtered_df["online"] == "En ligne"]
 
     return filtered_df
+
+
+def get_event_status(data):
+    if data.get("eventSourceDisabled"):
+        return "Données suspendues", "orange", ":material/pause_circle:"
+    if data.get("websiteMode") == "online":
+        return "Direct", "green", ":material/circle:"
+    if data.get("websiteMode") in {"offline", "finished", "closed"}:
+        return "Événement terminé", "gray", ":material/check_circle:"
+    return "Statut indisponible", "gray", ":material/help:"
 
 
 @st.fragment(run_every="60s")
@@ -95,6 +112,7 @@ if "live" not in st.session_state:
     st.session_state["globalDonationUrl"] = data["globalDonationUrl"]
     st.session_state["donationAmount"] = data["donationAmount"]
     st.session_state["viewersCount"] = data["viewersCount"]
+    st.session_state["event_status"] = get_event_status(data)
 
 header_title, header_actions = st.columns([3, 1], vertical_alignment="top")
 
@@ -107,7 +125,10 @@ with header_title:
         else f"Dernière mise à jour : {updated_at:%d/%m/%Y à %H:%M:%S}"
     )
     with st.container(horizontal=True, vertical_alignment="center", gap="small"):
-        st.badge("Direct", icon=":material/circle:", color="green")
+        event_label, event_color, event_icon = st.session_state.get(
+            "event_status", ("Statut indisponible", "gray", ":material/help:")
+        )
+        st.badge(event_label, icon=event_icon, color=event_color)
         st.caption(update_label)
 
 with header_actions:
@@ -122,11 +143,13 @@ with header_actions:
         "Rafraîchir les données", icon=":material/refresh:", width="stretch"
     ):
         load_data.clear()
-        data = fetch_data()
-        st.session_state["live"] = data["live"]
-        st.session_state["globalDonationUrl"] = data["globalDonationUrl"]
-        st.session_state["donationAmount"] = data["donationAmount"]
-        st.session_state["viewersCount"] = data["viewersCount"]
+        with st.spinner("Actualisation des données..."):
+            data = fetch_data()
+            st.session_state["live"] = data["live"]
+            st.session_state["globalDonationUrl"] = data["globalDonationUrl"]
+            st.session_state["donationAmount"] = data["donationAmount"]
+            st.session_state["viewersCount"] = data["viewersCount"]
+            st.session_state["event_status"] = get_event_status(data)
 
 live = st.session_state["live"]
 
@@ -158,15 +181,25 @@ col4.metric(
 )
 
 df = build_streamers_dataframe(live)
+game_options = ["Tous"] + sorted(df["game"].dropna().unique().tolist())
 
 st.subheader("Streamers")
 with st.container(border=True):
-    search_col, sort_col, filter_col = st.columns([2, 1, 1], vertical_alignment="bottom")
+    search_col, game_col, sort_col, filter_col = st.columns(
+        [2, 1, 1, 1], vertical_alignment="bottom"
+    )
     with search_col:
         st.markdown('<div class="toolbar-label">Rechercher</div>', unsafe_allow_html=True)
         search_query = st.text_input(
             "Rechercher",
             placeholder="Streamer ou jeu",
+            label_visibility="collapsed",
+        )
+    with game_col:
+        st.markdown('<div class="toolbar-label">Jeu</div>', unsafe_allow_html=True)
+        game_filter = st.selectbox(
+            "Jeu",
+            options=game_options,
             label_visibility="collapsed",
         )
     with sort_col:
@@ -190,7 +223,7 @@ with st.container(border=True):
             label_visibility="collapsed",
         )
 
-df = filter_streamers(df, search_query, view_mode)
+df = filter_streamers(df, search_query, game_filter, view_mode)
 
 if df.empty:
     st.info(
@@ -245,6 +278,8 @@ st.dataframe(
 )
 
 st.subheader("Classement des streamers")
+ranking_scope = "streamers en direct" if view_mode == "En direct" else "tous les streamers"
+st.caption(f"Périmètre : {ranking_scope} · viewers actuels · dons cumulés")
 chart_col1, chart_col2 = st.columns(2)
 chart_muted_color = "#a8adb8" if st.context.theme.type == "dark" else "#737784"
 chart_config = {
@@ -263,7 +298,7 @@ top_viewers = df_sorted.nlargest(10, "viewersAmount")
 top_donations = df_sorted.nlargest(10, "donationAmount")
 
 with chart_col1:
-    st.caption("Top 10 viewers")
+    st.caption("Top 10 viewers actuels")
     viewers_chart = (
         alt.Chart(top_viewers)
         .mark_bar(cornerRadiusEnd=4, color="#e6533c")
@@ -281,7 +316,7 @@ with chart_col1:
     st.altair_chart(viewers_chart, width="stretch")
 
 with chart_col2:
-    st.caption("Top 10 dons")
+    st.caption("Top 10 dons cumulés")
     donations_chart = (
         alt.Chart(top_donations)
         .mark_bar(cornerRadiusEnd=4, color="#6f8f3d")

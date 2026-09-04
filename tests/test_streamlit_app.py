@@ -34,6 +34,11 @@ def make_app():
     app.session_state["globalDonationUrl"] = "https://example.com/donate"
     app.session_state["donationAmount"] = {"formatted": "425 €"}
     app.session_state["viewersCount"] = {"formatted": "1 200"}
+    app.session_state["event_status"] = (
+        "Direct",
+        "green",
+        ":material/circle:",
+    )
     return app.run()
 
 
@@ -57,6 +62,16 @@ def test_all_view_and_search_filter_streamers():
     assert not app.exception
     assert len(app.dataframe[0].value) == 1
     assert app.dataframe[0].value.iloc[0]["display"] == "BobOffline"
+
+
+def test_game_filter_limits_streamers():
+    app = make_app()
+
+    app.selectbox[1].select("ZEVENT").run()
+
+    assert not app.exception
+    assert len(app.dataframe[0].value) == 1
+    assert app.dataframe[0].value.iloc[0]["display"] == "AliceLive"
 
 
 def test_empty_search_shows_feedback():
