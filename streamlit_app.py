@@ -22,6 +22,43 @@ def load_data():
     return response.json()
 
 
+def build_streamers_dataframe(live):
+    return pd.DataFrame(
+        [
+            {
+                "avatar": item.get("profileUrl"),
+                "display": item.get("display"),
+                "twitchUrl": f"https://twitch.tv/{item.get('twitch')}",
+                "online": "🟢 En ligne" if item.get("online") else "🔴 Hors ligne",
+                "game": item.get("game"),
+                "viewersAmount": item.get("viewersAmount", {}).get("number", 0),
+                "donationAmount": item.get("donationAmount", {}).get("number", 0),
+                "donationUrl": item.get("donationUrl"),
+            }
+            for item in live
+        ]
+    )
+
+
+def filter_streamers(df, search_query, view_mode):
+    filtered_df = df
+    search_query = search_query.strip()
+
+    if search_query:
+        search_mask = filtered_df["display"].fillna("").str.contains(
+            search_query, case=False, regex=False
+        )
+        search_mask |= filtered_df["game"].fillna("").str.contains(
+            search_query, case=False, regex=False
+        )
+        filtered_df = filtered_df[search_mask]
+
+    if view_mode == "En direct":
+        filtered_df = filtered_df[filtered_df["online"] == "🟢 En ligne"]
+
+    return filtered_df
+
+
 @st.fragment(run_every="60s")
 def auto_refresh():
     now = time.monotonic()
@@ -117,21 +154,7 @@ col4.metric(
     border=True,
 )
 
-df = pd.DataFrame(
-    [
-        {
-            "avatar": item.get("profileUrl"),
-            "display": item.get("display"),
-            "twitchUrl": f"https://twitch.tv/{item.get('twitch')}",
-            "online": "🟢 En ligne" if item.get("online") else "🔴 Hors ligne",
-            "game": item.get("game"),
-            "viewersAmount": item.get("viewersAmount", {}).get("number", 0),
-            "donationAmount": item.get("donationAmount", {}).get("number", 0),
-            "donationUrl": item.get("donationUrl"),
-        }
-        for item in live
-    ]
-)
+df = build_streamers_dataframe(live)
 
 st.subheader("Streamers")
 with st.container(border=True):
@@ -161,18 +184,7 @@ with st.container(border=True):
             label_visibility="collapsed",
         )
 
-search_query = search_query.strip()
-if search_query:
-    search_mask = df["display"].fillna("").str.contains(
-        search_query, case=False, regex=False
-    )
-    search_mask |= df["game"].fillna("").str.contains(
-        search_query, case=False, regex=False
-    )
-    df = df[search_mask]
-
-if view_mode == "En direct":
-    df = df[df["online"] == "🟢 En ligne"]
+df = filter_streamers(df, search_query, view_mode)
 
 if df.empty:
     st.info(
