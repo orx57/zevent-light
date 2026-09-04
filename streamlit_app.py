@@ -285,6 +285,102 @@ st.dataframe(
     width="stretch",
 )
 
+st.subheader("Analyse")
+st.caption("Calculée sur les streamers correspondant aux filtres sélectionnés.")
+analysis_online = df[df["online"] == "En ligne"]
+viewers_average = (
+    analysis_online["viewersAmount"].mean() if not analysis_online.empty else 0
+)
+donating_streamers = int((df["donationAmount"] > 0).sum())
+total_donations = df["donationAmount"].sum()
+top_ten_donations = df.nlargest(10, "donationAmount")["donationAmount"].sum()
+donation_concentration = (
+    top_ten_donations / total_donations if total_donations else 0
+)
+scoped_online_rate = (len(analysis_online) / len(df)) if len(df) else 0
+
+with st.container(horizontal=True):
+    st.metric(
+        "Viewers moyens en direct",
+        f"{viewers_average:,.0f}".replace(",", " "),
+        border=True,
+        help="Moyenne de viewers par streamer actuellement en ligne.",
+    )
+    st.metric(
+        "Taux en ligne",
+        f"{scoped_online_rate:.1%}",
+        border=True,
+        help="Part des streamers sélectionnés actuellement en ligne.",
+    )
+    st.metric(
+        "Streamers avec des dons",
+        donating_streamers,
+        border=True,
+        help="Nombre de streamers sélectionnés avec un montant de dons supérieur à zéro.",
+    )
+    st.metric(
+        "Part des dons du top 10",
+        f"{donation_concentration:.1%}",
+        border=True,
+        help="Part des dons sélectionnés détenue par les dix premiers donateurs.",
+    )
+
+game_analysis = (
+    df.groupby("game", dropna=False)
+    .agg(streamers=("display", "count"), viewers=("viewersAmount", "sum"))
+    .reset_index()
+    .fillna({"game": "Jeu inconnu"})
+)
+game_chart_col1, game_chart_col2 = st.columns(2)
+analysis_muted_color = "#a8adb8" if st.context.theme.type == "dark" else "#737784"
+analysis_chart_config = {
+    "background": "transparent",
+    "axis": {
+        "labelColor": analysis_muted_color,
+        "titleColor": analysis_muted_color,
+        "gridColor": analysis_muted_color,
+        "gridOpacity": 0.2,
+        "domainColor": analysis_muted_color,
+    },
+    "view": {"stroke": "transparent"},
+}
+
+with game_chart_col1:
+    st.caption("Viewers par jeu")
+    viewers_by_game = (
+        alt.Chart(game_analysis)
+        .mark_bar(cornerRadiusEnd=4, color="#e6533c")
+        .encode(
+            x=alt.X("viewers:Q", title="Viewers"),
+            y=alt.Y("game:N", sort="-x", title=None),
+            tooltip=[
+                alt.Tooltip("game:N", title="Jeu"),
+                alt.Tooltip("viewers:Q", title="Viewers", format=",.0f"),
+            ],
+        )
+        .configure(**analysis_chart_config)
+        .properties(height=240)
+    )
+    st.altair_chart(viewers_by_game, width="stretch")
+
+with game_chart_col2:
+    st.caption("Streamers par jeu")
+    streamers_by_game = (
+        alt.Chart(game_analysis)
+        .mark_bar(cornerRadiusEnd=4, color="#6f8f3d")
+        .encode(
+            x=alt.X("streamers:Q", title="Streamers"),
+            y=alt.Y("game:N", sort="-x", title=None),
+            tooltip=[
+                alt.Tooltip("game:N", title="Jeu"),
+                alt.Tooltip("streamers:Q", title="Streamers", format=",.0f"),
+            ],
+        )
+        .configure(**analysis_chart_config)
+        .properties(height=240)
+    )
+    st.altair_chart(streamers_by_game, width="stretch")
+
 st.subheader("Classement des streamers")
 ranking_scope = "streamers en direct" if view_mode == "En direct" else "tous les streamers"
 st.caption(f"Périmètre : {ranking_scope} · viewers actuels · dons cumulés")
