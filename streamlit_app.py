@@ -325,6 +325,11 @@ for footer_col, (name, description, url) in zip(
     footer_col.caption(description)
 
 with st.container(border=True):
-    footer_col1, footer_col2 = st.columns(2)
-    footer_col1.caption("Données du ZEVENT")
-    footer_col2.caption(f"Version {version}")
+    st.caption(
+        "Données issues de l’API publique de zevent.fr : streamers, viewers et dons."
+    )
+    footer_col1, footer_col2 = st.columns([3, 1])
+    footer_col1.caption(
+        "Projet personnel indépendant, sans affiliation avec l’organisation du ZEVENT."
+    )
+    footer_col2.caption(f"Version {version}", text_alignment="right")
