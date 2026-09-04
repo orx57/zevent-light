@@ -29,7 +29,7 @@ def build_streamers_dataframe(live):
                 "avatar": item.get("profileUrl"),
                 "display": item.get("display"),
                 "twitchUrl": f"https://twitch.tv/{item.get('twitch')}",
-                "online": "🟢 En ligne" if item.get("online") else "🔴 Hors ligne",
+                "online": "En ligne" if item.get("online") else "Hors ligne",
                 "game": item.get("game"),
                 "viewersAmount": item.get("viewersAmount", {}).get("number", 0),
                 "donationAmount": item.get("donationAmount", {}).get("number", 0),
@@ -54,7 +54,7 @@ def filter_streamers(df, search_query, view_mode):
         filtered_df = filtered_df[search_mask]
 
     if view_mode == "En direct":
-        filtered_df = filtered_df[filtered_df["online"] == "🟢 En ligne"]
+        filtered_df = filtered_df[filtered_df["online"] == "En ligne"]
 
     return filtered_df
 
@@ -115,9 +115,12 @@ with header_actions:
         "Faire un don global",
         st.session_state["globalDonationUrl"],
         type="primary",
+        icon=":material/volunteer_activism:",
         width="stretch",
     )
-    if st.button("Rafraîchir les données", width="stretch"):
+    if st.button(
+        "Rafraîchir les données", icon=":material/refresh:", width="stretch"
+    ):
         load_data.clear()
         data = fetch_data()
         st.session_state["live"] = data["live"]
@@ -179,6 +182,9 @@ with st.container(border=True):
         view_mode = st.segmented_control(
             "Afficher",
             options=["En direct", "Tous"],
+            format_func=lambda option: (
+                ":material/live_tv: En direct" if option == "En direct" else "Tous"
+            ),
             default="En direct",
             selection_mode="single",
             label_visibility="collapsed",
@@ -200,12 +206,8 @@ st.caption(
 )
 
 df_sorted = df.sort_values(by=sort_by, ascending=False).reset_index(drop=True)
-rank_badges = {1: "🥇", 2: "🥈", 3: "🥉"}
 df_sorted["position"] = [
-    f"{position} {rank_badges[position]}"
-    if position in rank_badges
-    else str(position)
-    for position in range(1, len(df_sorted) + 1)
+    f"#{position}" for position in range(1, len(df_sorted) + 1)
 ]
 df_sorted = df_sorted[
     ["position"]
@@ -244,6 +246,18 @@ st.dataframe(
 
 st.subheader("Classement des streamers")
 chart_col1, chart_col2 = st.columns(2)
+chart_muted_color = "#a8adb8" if st.context.theme.type == "dark" else "#737784"
+chart_config = {
+    "background": "transparent",
+    "axis": {
+        "labelColor": chart_muted_color,
+        "titleColor": chart_muted_color,
+        "gridColor": chart_muted_color,
+        "gridOpacity": 0.2,
+        "domainColor": chart_muted_color,
+    },
+    "view": {"stroke": "transparent"},
+}
 
 top_viewers = df_sorted.nlargest(10, "viewersAmount")
 top_donations = df_sorted.nlargest(10, "donationAmount")
@@ -261,6 +275,7 @@ with chart_col1:
                 alt.Tooltip("viewersAmount:Q", title="Viewers", format=",.0f"),
             ],
         )
+        .configure(**chart_config)
         .properties(height=300)
     )
     st.altair_chart(viewers_chart, width="stretch")
@@ -278,6 +293,7 @@ with chart_col2:
                 alt.Tooltip("donationAmount:Q", title="Dons (€)", format=",.2f"),
             ],
         )
+        .configure(**chart_config)
         .properties(height=300)
     )
     st.altair_chart(donations_chart, width="stretch")
