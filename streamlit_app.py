@@ -161,15 +161,25 @@ with st.container(border=True):
             label_visibility="collapsed",
         )
 
+search_query = search_query.strip()
 if search_query:
-    search_mask = df["display"].str.contains(search_query, case=False, na=False)
+    search_mask = df["display"].fillna("").str.contains(
+        search_query, case=False, regex=False
+    )
     search_mask |= df["game"].fillna("").str.contains(
-        search_query, case=False, na=False
+        search_query, case=False, regex=False
     )
     df = df[search_mask]
 
 if view_mode == "En direct":
     df = df[df["online"] == "🟢 En ligne"]
+
+if df.empty:
+    st.info(
+        "Aucun streamer ne correspond aux critères sélectionnés.",
+        icon=":material/search_off:",
+    )
+    st.stop()
 
 st.caption(
     f"{len(df)} streamer{'s' if len(df) != 1 else ''} affiché"
