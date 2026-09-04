@@ -8,6 +8,92 @@ import streamlit as st
 
 FRENCH_TIMEZONE = ZoneInfo("Europe/Paris")
 st.set_page_config(page_title="ZEVENT Stats", page_icon="📊", layout="wide")
+st.markdown(
+    """
+    <style>
+        :root {
+            --zevent-ink: #292b38;
+            --zevent-muted: #737784;
+            --zevent-accent: #e6533c;
+            --zevent-surface: #ffffff;
+            --zevent-border: #e4e5e9;
+        }
+
+        [data-testid="stAppViewContainer"] {
+            background: #f7f7f8;
+        }
+
+        [data-testid="stMainBlockContainer"] {
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+        }
+
+        h1 {
+            color: var(--zevent-ink);
+            letter-spacing: 0;
+            margin-bottom: 0.25rem;
+        }
+
+        [data-testid="stMetric"] {
+            background: var(--zevent-surface);
+            border: 1px solid var(--zevent-border);
+            border-top: 3px solid var(--zevent-accent);
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 14px rgba(41, 43, 56, 0.05);
+            min-height: 7rem;
+            padding: 1rem 1.1rem;
+        }
+
+        [data-testid="stMetricLabel"] {
+            color: var(--zevent-muted);
+            font-weight: 600;
+        }
+
+        [data-testid="stMetricValue"] {
+            color: var(--zevent-ink);
+        }
+
+        .live-status {
+            align-items: center;
+            color: var(--zevent-muted);
+            display: flex;
+            font-size: 0.85rem;
+            gap: 0.45rem;
+        }
+
+        .live-status__dot {
+            background: #6eb644;
+            border-radius: 50%;
+            display: inline-block;
+            height: 0.55rem;
+            width: 0.55rem;
+        }
+
+        .live-status__label {
+            color: #4f8d2f;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        .section-heading {
+            border-left: 4px solid var(--zevent-accent);
+            color: var(--zevent-ink);
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin: 2.25rem 0 0.75rem;
+            padding-left: 0.75rem;
+        }
+
+        [data-testid="stDataFrame"] {
+            border: 1px solid var(--zevent-border);
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 14px rgba(41, 43, 56, 0.04);
+            overflow: hidden;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 
 @st.fragment(run_every="60s")
@@ -58,7 +144,11 @@ with header_title:
         if updated_at is None
         else f"Dernière mise à jour : {updated_at:%d/%m/%Y à %H:%M:%S}"
     )
-    st.caption(f"🟢 Direct · {update_label}")
+    st.markdown(
+        f'<div class="live-status"><span class="live-status__dot"></span>'
+        f'<span class="live-status__label">DIRECT</span><span>· {update_label}</span></div>',
+        unsafe_allow_html=True,
+    )
 
 with header_actions:
     st.link_button(
@@ -66,13 +156,12 @@ with header_actions:
         st.session_state["globalDonationUrl"],
         use_container_width=True,
     )
-
-if st.button("Rafraîchir les données"):
-    data = fetch_data()
-    st.session_state["live"] = data["live"]
-    st.session_state["globalDonationUrl"] = data["globalDonationUrl"]
-    st.session_state["donationAmount"] = data["donationAmount"]
-    st.session_state["viewersCount"] = data["viewersCount"]
+    if st.button("Rafraîchir les données", use_container_width=True):
+        data = fetch_data()
+        st.session_state["live"] = data["live"]
+        st.session_state["globalDonationUrl"] = data["globalDonationUrl"]
+        st.session_state["donationAmount"] = data["donationAmount"]
+        st.session_state["viewersCount"] = data["viewersCount"]
 
 live = st.session_state["live"]
 
@@ -188,7 +277,7 @@ st.dataframe(
     use_container_width=True,
 )
 
-st.subheader("Classements")
+st.markdown('<div class="section-heading">Classement des streamers</div>', unsafe_allow_html=True)
 chart_col1, chart_col2 = st.columns(2)
 
 top_viewers = (
