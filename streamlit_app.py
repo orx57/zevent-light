@@ -130,7 +130,12 @@ with header_title:
         )
         st.badge(event_label, icon=event_icon, color=event_color)
         st.caption(update_label)
-    st.caption("Actualisation automatique toutes les 60 secondes")
+        st.button(
+            ":material/help_outline:",
+            help="Les données sont automatiquement actualisées toutes les 60 secondes.",
+            type="tertiary",
+            width="content",
+        )
 
 with header_actions:
     st.link_button(
