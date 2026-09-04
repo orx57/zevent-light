@@ -109,7 +109,7 @@ df = pd.DataFrame(
             "avatar": item.get("profileUrl"),
             "display": item.get("display"),
             "twitchUrl": f"https://twitch.tv/{item.get('twitch')}",
-            "online": "🟢" if item.get("online") else "🔴",
+            "online": "🟢 En ligne" if item.get("online") else "🔴 Hors ligne",
             "game": item.get("game"),
             "viewersAmount": item.get("viewersAmount", {}).get("number", 0),
             "donationAmount": item.get("donationAmount", {}).get("number", 0),
@@ -119,15 +119,31 @@ df = pd.DataFrame(
     ]
 )
 
-sort_by = st.selectbox(
-    "Trier par",
-    options=["viewersAmount", "donationAmount"],
-    format_func=lambda x: "Viewers" if x == "viewersAmount" else "Donations (€)",
-)
-online_only = st.checkbox("En ligne uniquement")
+search_col, sort_col, filter_col = st.columns([2, 1, 1])
+with search_col:
+    search_query = st.text_input(
+        "Rechercher",
+        placeholder="Streamer ou jeu",
+        label_visibility="collapsed",
+    )
+with sort_col:
+    sort_by = st.selectbox(
+        "Trier par",
+        options=["viewersAmount", "donationAmount"],
+        format_func=lambda x: "Viewers" if x == "viewersAmount" else "Donations (€)",
+    )
+with filter_col:
+    online_only = st.checkbox("En ligne uniquement")
+
+if search_query:
+    search_mask = df["display"].str.contains(search_query, case=False, na=False)
+    search_mask |= df["game"].fillna("").str.contains(
+        search_query, case=False, na=False
+    )
+    df = df[search_mask]
 
 if online_only:
-    df = df[df["online"] == "🟢"]
+    df = df[df["online"] == "🟢 En ligne"]
 
 df_sorted = df.sort_values(by=sort_by, ascending=False).reset_index(drop=True)
 rank_badges = {1: "🥇", 2: "🥈", 3: "🥉"}
@@ -156,7 +172,7 @@ st.dataframe(
         "twitchUrl": st.column_config.LinkColumn(
             "Chaîne", display_text="Ouvrir", width="small"
         ),
-        "online": st.column_config.TextColumn("En ligne", width="small"),
+        "online": st.column_config.TextColumn("Statut", width="small"),
         "game": st.column_config.TextColumn("Jeu", width="medium"),
         "viewersAmount": st.column_config.NumberColumn(
             "Viewers", format="localized", width="small"
