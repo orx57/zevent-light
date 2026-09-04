@@ -15,6 +15,13 @@ st.set_page_config(
 )
 
 
+@st.cache_data(ttl="60s", max_entries=1, show_spinner=False)
+def load_data():
+    response = requests.get("https://zevent.fr/api/", timeout=10)
+    response.raise_for_status()
+    return response.json()
+
+
 @st.fragment(run_every="60s")
 def auto_refresh():
     now = time.monotonic()
@@ -24,6 +31,7 @@ def auto_refresh():
         st.session_state["last_auto_refresh"] = now
     elif now - last_refresh >= 60:
         st.session_state["last_auto_refresh"] = now
+        load_data.clear()
         st.session_state.pop("live", None)
         st.rerun()
 
@@ -33,9 +41,7 @@ auto_refresh()
 
 def fetch_data():
     try:
-        response = requests.get("https://zevent.fr/api/", timeout=10)
-        response.raise_for_status()
-        data = response.json()
+        data = load_data()
         st.session_state["updated_at"] = datetime.now(FRENCH_TIMEZONE)
         return data
     except requests.RequestException:
@@ -75,6 +81,7 @@ with header_actions:
         width="stretch",
     )
     if st.button("Rafraîchir les données", width="stretch"):
+        load_data.clear()
         data = fetch_data()
         st.session_state["live"] = data["live"]
         st.session_state["globalDonationUrl"] = data["globalDonationUrl"]
