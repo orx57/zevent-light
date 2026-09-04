@@ -84,6 +84,13 @@ st.markdown(
             padding-left: 0.75rem;
         }
 
+        .toolbar-label {
+            color: var(--zevent-muted);
+            font-size: 0.78rem;
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+        }
+
         [data-testid="stDataFrame"] {
             border: 1px solid var(--zevent-border);
             border-radius: 0.75rem;
@@ -208,21 +215,27 @@ df = pd.DataFrame(
     ]
 )
 
-search_col, sort_col, filter_col = st.columns([2, 1, 1])
-with search_col:
-    search_query = st.text_input(
-        "Rechercher",
-        placeholder="Streamer ou jeu",
-        label_visibility="collapsed",
-    )
-with sort_col:
-    sort_by = st.selectbox(
-        "Trier par",
-        options=["viewersAmount", "donationAmount"],
-        format_func=lambda x: "Viewers" if x == "viewersAmount" else "Donations (€)",
-    )
-with filter_col:
-    online_only = st.checkbox("En ligne uniquement")
+st.markdown('<div class="section-heading">Streamers</div>', unsafe_allow_html=True)
+with st.container(border=True):
+    search_col, sort_col, filter_col = st.columns([2, 1, 1], vertical_alignment="bottom")
+    with search_col:
+        st.markdown('<div class="toolbar-label">Rechercher</div>', unsafe_allow_html=True)
+        search_query = st.text_input(
+            "Rechercher",
+            placeholder="Streamer ou jeu",
+            label_visibility="collapsed",
+        )
+    with sort_col:
+        st.markdown('<div class="toolbar-label">Trier par</div>', unsafe_allow_html=True)
+        sort_by = st.selectbox(
+            "Trier par",
+            options=["viewersAmount", "donationAmount"],
+            format_func=lambda x: "Viewers" if x == "viewersAmount" else "Donations (€)",
+            label_visibility="collapsed",
+        )
+    with filter_col:
+        st.markdown('<div class="toolbar-label">Filtrer</div>', unsafe_allow_html=True)
+        online_only = st.checkbox("En ligne uniquement")
 
 if search_query:
     search_mask = df["display"].str.contains(search_query, case=False, na=False)
