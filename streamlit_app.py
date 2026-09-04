@@ -92,6 +92,42 @@ st.markdown(
             margin-bottom: 0.35rem;
         }
 
+        .footer-heading {
+            color: var(--zevent-ink);
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .footer-link {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .footer-link a {
+            color: var(--zevent-ink);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .footer-link a:hover {
+            color: var(--zevent-accent);
+        }
+
+        .footer-link span,
+        .footer-meta {
+            color: var(--zevent-muted);
+            font-size: 0.78rem;
+        }
+
+        .footer-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+        }
+
         [data-testid="stDataFrame"] {
             border: 1px solid var(--zevent-border);
             border-radius: 0.75rem;
@@ -346,16 +382,36 @@ with chart_col2:
     )
     st.altair_chart(donations_chart, use_container_width=True)
 
-st.markdown("---")
-st.markdown("- [stats.zevent.fr - Statistiques](https://stats.zevent.fr/)")
-st.markdown("- [zevent-stats.louis-julien.dev - ZEvent stats](https://zevent-stats.louis-julien.dev/)")
-st.markdown("- [zevent.gdoc.fr - Statistiques](https://zevent.gdoc.fr/statistics)")
-st.markdown("- [astucesweb.fr - ZEVENT](https://astucesweb.fr/projets/zevent/)")
-
 version_datetime = datetime.now(FRENCH_TIMEZONE)
 iso_calendar = version_datetime.isocalendar()
 version = (
     f"v{iso_calendar.year}.{iso_calendar.week:02d}."
     f"{iso_calendar.weekday}-{version_datetime:%H%M}"
 )
-st.caption(version)
+
+st.markdown("---")
+st.markdown('<div class="footer-heading">Autres tableaux de bord</div>', unsafe_allow_html=True)
+footer_col1, footer_col2, footer_col3, footer_col4 = st.columns(4)
+footer_links = [
+    ("stats.zevent.fr", "Statistiques", "https://stats.zevent.fr/"),
+    (
+        "zevent-stats.louis-julien.dev",
+        "ZEvent stats",
+        "https://zevent-stats.louis-julien.dev/",
+    ),
+    ("zevent.gdoc.fr", "Statistiques", "https://zevent.gdoc.fr/statistics"),
+    ("astucesweb.fr", "ZEVENT", "https://astucesweb.fr/projets/zevent/"),
+]
+for footer_col, (name, description, url) in zip(
+    (footer_col1, footer_col2, footer_col3, footer_col4), footer_links
+):
+    footer_col.markdown(
+        f'<div class="footer-link"><a href="{url}" target="_blank">{name} ↗</a>'
+        f"<span>{description}</span></div>",
+        unsafe_allow_html=True,
+    )
+
+st.markdown(
+    f'<div class="footer-meta"><span>Données du ZEVENT</span><span>{version}</span></div>',
+    unsafe_allow_html=True,
+)
